@@ -54,13 +54,7 @@ function App() {
   const disconnectSocket = () => {
     if (socket) socket.close();
   };
-  //TODO : to delete (just for test)
-  const generate_pwd_test = () => {
-    const password = generatePassword(passwordLength);
-    const hash = hashPassword(password);
-    setGeneratedPassword(password);
-    setHashedPassword(hash);
-  };
+
 
   const generatePassword = (length) => {
     const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -109,10 +103,6 @@ function App() {
           ) : (
             <button onClick={disconnectSocket}>Disconnect</button>
           )}
-        </div>
-
-        <div className="controls">
-          <button onClick={generate_pwd_test}>Generate pwd</button>
         </div>
 
         <ul className="status">
