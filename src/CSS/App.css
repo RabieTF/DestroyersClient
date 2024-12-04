@@ -72,7 +72,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-left: 10%;
+  padding: 5%;
   justify-content: left;
   font-size: calc(10px + 2vmin);
   color: white;
@@ -98,4 +98,69 @@ span{
   to {
     transform: rotate(360deg);
   }
+}
+
+/* Table */
+
+.password-table {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%; /* Parent occupe toute la largeur */
+}
+
+table {
+  width: 100%; /* Tableau s'étend sur 100% */
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+table, th, td {
+  border: 1px solid #ccc;
+}
+
+th, td {
+  padding: 5px;
+  text-align: center;
+  font-size: 23px;
+}
+
+th {
+  background-color: #333;
+  color: #fff;
+}
+
+tr:nth-child(even) {
+  background-color: #2496ED;
+}
+
+tr:hover {
+  background-color: #97da79;
+  color: #000000;
+}
+
+.pagination {
+  margin-top: 15px;
+}
+
+button {
+  margin: 5px;
+  padding: 8px 15px;
+  border: none;
+  background-color: #2496ED;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+button:disabled {
+  background-color: #ccc;
+  color: #000000;
+  cursor: not-allowed;
+}
+
+button:hover:not(:disabled) {
+  background-color: #555;
+  color: #2496ED;
 }
