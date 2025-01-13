@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './CSS/App.css';
-import CryptoJS from 'crypto-js'; // Assurez-vous d'importer crypto-js
+import CryptoJS from 'crypto-js';
+import { FaLink, FaUnlink, FaKey, FaLock, FaLockOpen, FaClock, FaCheck, FaTimes, FaSort, FaSortUp, FaSortDown } from 'react-icons/fa';
 
 function App() {
   const [passwordLength, setPasswordLength] = useState(4);
@@ -10,10 +11,14 @@ function App() {
   const [hashedPassword, setHashedPassword] = useState('');
   const [status, setStatus] = useState('Disconnected');
   const [socket, setSocket] = useState(null);
-  const [passwordsList, setPasswordsList] = useState([]); // Stores generated passwords
-  const [currentPage, setCurrentPage] = useState(0); // For pagination
+  const [passwordsList, setPasswordsList] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [sortOrderTime, setSortOrderTime] = useState('asc'); // Tri par date
+  const [sortOrderStatus, setSortOrderStatus] = useState('asc'); // Tri par état
+  const [brokenPasswordsCount, setBrokenPasswordsCount] = useState(0);
+  const [unbrokenPasswordsCount, setUnbrokenPasswordsCount] = useState(0);
 
-  const entriesPerPage = 10; // Maximum entries per page
+  const entriesPerPage = 10;
 
   useEffect(() => {
     let interval;
@@ -26,13 +31,11 @@ function App() {
         setGeneratedPassword(password);
         setHashedPassword(hash);
 
-        // Add the new password to the list
         setPasswordsList((prevList) => [
           { password, hash, time, status: 'Not Broken' },
           ...prevList,
         ]);
 
-        // Send hash via WebSocket
         socket.send(hash);
         console.log(`Password sent: ${hash}`);
       }, intervalTime);
@@ -40,6 +43,10 @@ function App() {
 
     return () => clearInterval(interval);
   }, [isConnected, socket, passwordLength, intervalTime]);
+
+  useEffect(() => {
+    updatePasswordCounts(passwordsList);
+  }, [passwordsList]);
 
   const connectSocket = () => {
     const ws = new WebSocket('ws://localhost:8080/ws');
@@ -65,20 +72,6 @@ function App() {
     if (socket) socket.close();
   };
 
-  //TODO : test
-  const generate_pwd_test = () => {
-    const password = generatePassword(passwordLength);
-    const hash = hashPassword(password);
-    setGeneratedPassword(password);
-    setHashedPassword(hash);
-
-    // Add the new password to the list
-    setPasswordsList((prevList) => [
-      { password, hash, status: 'Not Broken' },
-      ...prevList,
-    ]);
-  };
-
   const generatePassword = (length) => {
     const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     let password = "";
@@ -88,12 +81,67 @@ function App() {
     return password;
   };
 
-  function hashPassword(password) {
-    return CryptoJS.MD5(password).toString();
-  }
+  const generate_pwd_test = () => {
+    const password = generatePassword(passwordLength);
+    const hash = hashPassword(password);
+    setGeneratedPassword(password);
+    setHashedPassword(hash);
 
-  // Pagination
-  const currentEntries = passwordsList.slice(
+    setPasswordsList((prevList) => [
+      { password, hash, time: getCurrentTime(), status: 'Not Broken' },
+      ...prevList,
+    ]);
+  };
+
+  const hashPassword = (password) => {
+    return CryptoJS.MD5(password).toString();
+  };
+
+  const getCurrentTime = () => {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    return `${hours}:${minutes}:${seconds}`;
+  };
+
+  const sortPasswordsByTime = (list, order) => {
+    return list.slice().sort((a, b) => {
+      const timeA = new Date(`1970/01/01 ${a.time}`).getTime();
+      const timeB = new Date(`1970/01/01 ${b.time}`).getTime();
+      return order === 'asc' ? timeA - timeB : timeB - timeA;
+    });
+  };
+
+  const sortPasswordsByStatus = (list, order) => {
+    return list.slice().sort((a, b) => {
+      const statusA = a.status === 'Broken' ? 1 : 0;
+      const statusB = b.status === 'Broken' ? 1 : 0;
+      return order === 'asc' ? statusA - statusB : statusB - statusA;
+    });
+  };
+
+  const updatePasswordCounts = (list) => {
+    const broken = list.filter((entry) => entry.status === 'Broken').length;
+    const unbroken = list.filter((entry) => entry.status === 'Not Broken').length;
+    setBrokenPasswordsCount(broken);
+    setUnbrokenPasswordsCount(unbroken);
+  };
+
+  const handleSortByTime = () => {
+    setSortOrderTime(sortOrderTime === 'asc' ? 'desc' : 'asc');
+  };
+
+  const handleSortByStatus = () => {
+    setSortOrderStatus(sortOrderStatus === 'asc' ? 'desc' : 'asc');
+  };
+
+  const sortedPasswords = sortPasswordsByTime(
+    sortPasswordsByStatus(passwordsList, sortOrderStatus),
+    sortOrderTime
+  );
+
+  const currentEntries = sortedPasswords.slice(
     currentPage * entriesPerPage,
     (currentPage + 1) * entriesPerPage
   );
@@ -109,16 +157,6 @@ function App() {
       setCurrentPage((prevPage) => prevPage - 1);
     }
   };
-
-  const getCurrentTime = () => {
-    const now = new Date();
-    const hours = String(now.getHours()).padStart(2, '0'); // Ensure 2 digits
-    const minutes = String(now.getMinutes()).padStart(2, '0'); // Ensure 2 digits
-    const seconds = String(now.getSeconds()).padStart(2, '0'); // Ensure 2 digits
-    return `${hours}:${minutes}:${seconds}`;
-  };
-
-  console.log(getCurrentTime());
 
   return (
     <div className="App">
@@ -149,9 +187,13 @@ function App() {
 
         <div className="controls">
           {!isConnected ? (
-            <button onClick={connectSocket}>Connect ws</button>
+            <button onClick={connectSocket}>
+              <FaLink /> Connect ws
+            </button>
           ) : (
-            <button onClick={disconnectSocket}>Disconnect</button>
+            <button onClick={disconnectSocket}>
+              <FaUnlink /> Disconnect
+            </button>
           )}
         </div>
 
@@ -161,6 +203,23 @@ function App() {
           <li>Last Hashed Password (MD5): <span>{hashedPassword}</span></li>
         </ul>
 
+        <div className="password-stats">
+          <h3>Password Statistics</h3>
+          <ul>
+            <li>
+              <FaCheck /> Broken Passwords: {brokenPasswordsCount} (
+              {((brokenPasswordsCount / passwordsList.length) * 100 || 0).toFixed(2)}%)
+            </li>
+            <li>
+              <FaTimes /> Unbroken Passwords: {unbrokenPasswordsCount} (
+              {((unbrokenPasswordsCount / passwordsList.length) * 100 || 0).toFixed(2)}%)
+            </li>
+            <li>
+              <FaKey /> Total Passwords: {passwordsList.length}
+            </li>
+          </ul>
+        </div>
+
         <div className="password-table">
           <h3>Generated Passwords</h3>
           <table>
@@ -168,39 +227,54 @@ function App() {
               <tr>
                 <th>Password</th>
                 <th>Hash (MD5)</th>
-                <th>Time</th>
-                <th>Status</th>
+                <th onClick={handleSortByTime} style={{ cursor: 'pointer' }}>
+                  Time {sortOrderTime === 'asc' ? <FaSortUp /> : <FaSortDown />}
+                </th>
+                <th onClick={handleSortByStatus} style={{ cursor: 'pointer' }}>
+                  Status {sortOrderStatus === 'asc' ? <FaSortUp /> : <FaSortDown />}
+                </th>
               </tr>
             </thead>
             <tbody>
               {currentEntries.length > 0 ? (
                 currentEntries.map((entry, index) => (
                   <tr key={index}>
-                    <td>{entry.password}</td>
-                    <td>{entry.hash}</td>
-                    <td>{entry.time}</td>
-                    <td>{entry.status}</td>
+                    <td>
+                      <FaKey /> {entry.password}
+                    </td>
+                    <td>
+                      <FaLock /> {entry.hash}
+                    </td>
+                    <td>
+                      <FaClock /> {entry.time}
+                    </td>
+                    <td>
+                      {entry.status === 'Broken' ? <FaLockOpen /> : <FaLock />} {entry.status}
+                    </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="3" style={{ textAlign: 'center' }}>No passwords generated yet</td>
+                  <td colSpan="4" style={{ textAlign: 'center' }}>
+                    No passwords generated yet
+                  </td>
                 </tr>
               )}
             </tbody>
           </table>
 
-          <div className="pagination">
-            <button onClick={handlePrevious} disabled={currentPage === 0}>
-              &laquo; Previous
-            </button>
-            <button
-              onClick={handleNext}
-              disabled={(currentPage + 1) * entriesPerPage >= passwordsList.length}
-            >
-              Next &raquo;
-            </button>
-          </div>
+          {passwordsList?.length > entriesPerPage &&
+            <div className="pagination">
+              <button onClick={handlePrevious} disabled={currentPage === 0}>
+                &laquo; Previous
+              </button>
+              <button
+                onClick={handleNext}
+                disabled={(currentPage + 1) * entriesPerPage >= passwordsList.length}
+              >
+                Next &raquo;
+              </button>
+            </div>}
         </div>
       </header>
     </div>
