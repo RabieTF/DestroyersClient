@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import './CSS/App.css';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import CryptoJS from 'crypto-js';
-import { FaLink, FaUnlink, FaKey, FaLock, FaLockOpen, FaClock, FaCheck, FaTimes, FaSortUp, FaSortDown } from 'react-icons/fa';
+import './CSS/App.css';
+import Header from './components/Header';
+import Configuration from './screens/Configuration';
+import Passwords from './screens/Passwords';
+import Containers from './screens/Containers';
 
 function App() {
   const [passwordLength, setPasswordLength] = useState(4);
@@ -18,7 +22,7 @@ function App() {
   const [brokenPasswordsCount, setBrokenPasswordsCount] = useState(0);
   const [unbrokenPasswordsCount, setUnbrokenPasswordsCount] = useState(0);
 
-  const entriesPerPage = 10;
+  const entriesPerPage = 6;
 
   useEffect(() => {
     let interval;
@@ -79,18 +83,6 @@ function App() {
       password += chars.charAt(Math.floor(Math.random() * chars.length));
     }
     return password;
-  };
-
-  const generate_pwd_test = () => {
-    const password = generatePassword(passwordLength);
-    const hash = hashPassword(password);
-    setGeneratedPassword(password);
-    setHashedPassword(hash);
-
-    setPasswordsList((prevList) => [
-      { password, hash, time: getCurrentTime(), status: 'Not Broken' },
-      ...prevList,
-    ]);
   };
 
   const hashPassword = (password) => {
@@ -159,125 +151,44 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <div className='head'>
-        <h1>☠︎︎ MD5 Destroyer</h1>
+    <Router>
+      <div className="App">
+        <Header />
+        <Routes>
+          <Route path="/" element={
+            <Configuration
+              isConnected={isConnected}
+              connectSocket={connectSocket}
+              disconnectSocket={disconnectSocket}
+              passwordLength={passwordLength}
+              setPasswordLength={setPasswordLength}
+              intervalTime={intervalTime}
+              setIntervalTime={setIntervalTime}
+            />
+          } />
+          <Route path="/passwords" element={
+            <Passwords
+              generatedPassword={generatedPassword}
+              hashedPassword={hashedPassword}
+              status={status}
+              passwordsList={passwordsList}
+              currentPage={currentPage}
+              sortOrderTime={sortOrderTime}
+              sortOrderStatus={sortOrderStatus}
+              brokenPasswordsCount={brokenPasswordsCount}
+              unbrokenPasswordsCount={unbrokenPasswordsCount}
+              handleSortByTime={handleSortByTime}
+              handleSortByStatus={handleSortByStatus}
+              currentEntries={currentEntries}
+              handlePrevious={handlePrevious}
+              handleNext={handleNext}
+              entriesPerPage={entriesPerPage}
+            />
+          } />
+          <Route path="/containers" element={<Containers />} />
+        </Routes>
       </div>
-      <header className="App-header">
-        <div className="settings">
-          <label className="label">
-            Passwords Length:
-            <input
-              className="input"
-              type="number"
-              value={passwordLength}
-              onChange={(e) => setPasswordLength(parseInt(e.target.value))}
-            />
-          </label>
-          <label className="label">
-            Time interval (ms):
-            <input
-              className="input"
-              type="number"
-              value={intervalTime}
-              onChange={(e) => setIntervalTime(parseInt(e.target.value))}
-            />
-          </label>
-        </div>
-
-        <div className="controls">
-          {!isConnected ? (
-            <button onClick={connectSocket}>
-              <FaLink /> Connect ws
-            </button>
-          ) : (
-            <button onClick={disconnectSocket}>
-              <FaUnlink /> Disconnect
-            </button>
-          )}
-        </div>
-
-        <ul className="status">
-          <li>Status: <span>{status}</span></li>
-          <li>Last Generated Password: <span>{generatedPassword}</span></li>
-          <li>Last Hashed Password (MD5): <span>{hashedPassword}</span></li>
-        </ul>
-
-        <div className="password-stats">
-          <h3>Password Statistics</h3>
-          <ul>
-            <li>
-              <FaCheck /> Broken Passwords: {brokenPasswordsCount} (
-              {((brokenPasswordsCount / passwordsList.length) * 100 || 0).toFixed(2)}%)
-            </li>
-            <li>
-              <FaTimes /> Unbroken Passwords: {unbrokenPasswordsCount} (
-              {((unbrokenPasswordsCount / passwordsList.length) * 100 || 0).toFixed(2)}%)
-            </li>
-            <li>
-              <FaKey /> Total Passwords: {passwordsList.length}
-            </li>
-          </ul>
-        </div>
-
-        <div className="password-table">
-          <h3>Generated Passwords</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>Password</th>
-                <th>Hash (MD5)</th>
-                <th onClick={handleSortByTime} style={{ cursor: 'pointer' }}>
-                  Time {sortOrderTime === 'asc' ? <FaSortUp /> : <FaSortDown />}
-                </th>
-                <th onClick={handleSortByStatus} style={{ cursor: 'pointer' }}>
-                  Status {sortOrderStatus === 'asc' ? <FaSortUp /> : <FaSortDown />}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentEntries.length > 0 ? (
-                currentEntries.map((entry, index) => (
-                  <tr key={index}>
-                    <td>
-                      <FaKey /> {entry.password}
-                    </td>
-                    <td>
-                      <FaLock /> {entry.hash}
-                    </td>
-                    <td>
-                      <FaClock /> {entry.time}
-                    </td>
-                    <td>
-                      {entry.status === 'Broken' ? <FaLockOpen /> : <FaLock />} {entry.status}
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="4" style={{ textAlign: 'center' }}>
-                    No passwords generated yet
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-
-          {passwordsList?.length > entriesPerPage &&
-            <div className="pagination">
-              <button onClick={handlePrevious} disabled={currentPage === 0}>
-                &laquo; Previous
-              </button>
-              <button
-                onClick={handleNext}
-                disabled={(currentPage + 1) * entriesPerPage >= passwordsList.length}
-              >
-                Next &raquo;
-              </button>
-            </div>}
-        </div>
-      </header>
-    </div>
+    </Router>
   );
 }
 

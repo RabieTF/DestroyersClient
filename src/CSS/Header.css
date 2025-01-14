@@ -1,0 +1,78 @@
+/* Header.css */
+.header {
+    background-color: #0d0d0d; /* Fond très sombre */
+    color: #00ff00; /* Texte vert néon */
+    padding: 8px 20px; /* Supprimez le padding vertical */
+    border-bottom: 2px solid #00ff00; /* Bordure basse néon */
+    box-shadow: 0 0 10px #00ff00; /* Ombre néon */
+    font-family: 'Hack', monospace;
+    justify-content: space-between; /* Espace entre le titre et la navigation */
+    align-items: center; /* Alignement vertical au centre */
+    height: 60px; /* Hauteur fixe du header (ajustez selon vos besoins) */
+}
+
+.nav {
+    display: flex;
+    align-items: center; /* Alignement vertical au centre */
+    gap: 40px; /* Espace entre le titre et la navigation */
+    width: 100%;
+    height: 100%; /* Prend toute la hauteur du header */
+}
+
+.head {
+    width: 40%;
+    height: 100%; /* Prend toute la hauteur du header */
+    display: flex;
+    align-items: center; /* Centre le titre verticalement */
+}
+
+.head h1 {
+    margin: 0;
+    font-size: 35pt;
+    text-shadow: 0 0 2px #00ff00, 0 0 2px #00ff00; /* Ombre texte néon */
+}
+
+.nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    margin-right: 20px;
+    display: flex;
+    gap: 30px; /* Espace entre les liens */
+    justify-content: end;
+    width: 60%;
+    height: 100%; /* Prend toute la hauteur du header */
+}
+
+.nav li {
+    margin: 0;
+    height: 100%; /* Prend toute la hauteur du header */
+    display: flex;
+    align-items: center; /* Centre le lien verticalement */
+}
+
+.nav a {
+    height: 100%; /* Prend toute la hauteur du parent (li) */
+    color: #00ff00; /* Texte vert néon */
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+    text-shadow: 0 0 1px #00ff00, 0 0 1px #00ff00; /* Ombre texte néon */
+    transition: color 0.3s, text-shadow 0.3s, background-color 0.3s;
+    padding: 0 16px; /* Espacement horizontal uniquement */
+    border-radius: 5px; /* Coins arrondis */
+    display: flex;
+    align-items: center; /* Centre le texte verticalement */
+}
+
+.nav a:hover {
+    background-color: #00ff00c0; /* Fond vert foncé au survol */
+    color: #0d0d0d; /* Texte vert plus clair au survol */
+    text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00; /* Ombre texte néon plus intense */
+}
+
+.nav a.active {
+    background-color: #00ff00; /* Fond vert pour le lien actif */
+    color: #0d0d0d; /* Texte vert néon */
+    text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00; /* Ombre texte néon */
+}

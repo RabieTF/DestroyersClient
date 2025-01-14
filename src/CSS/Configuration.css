@@ -1,0 +1,138 @@
+/* Configuration.css */
+.configuration {
+    background-color: #1a1a1a;
+    /* Fond légèrement plus clair */
+    padding: 20px;
+    border: 1px solid #00ff00;
+    /* Bordure néon */
+    box-shadow: 0 0 10px #00ff00;
+    /* Ombre néon */
+    border-radius: 10px;
+    /* Coins arrondis */
+    margin: 150px auto;
+    max-width: 70%;
+    align-items: center;
+    height: 100%;
+    /* Largeur maximale pour une meilleure lisibilité */
+}
+
+.configuration h2 {
+    color: #00ff00;
+    /* Texte vert néon */
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-shadow: 0 0 2px #00ff00, 0 0 2px #00ff00;
+    /* Ombre texte néon */
+}
+
+.settings {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    border-radius: 10px;
+    /* Espace entre les éléments */
+}
+
+.settings {
+    margin-top: 5%;
+    background-color: #1a1a1a;
+    /* Fond légèrement plus clair */
+    padding: 20px;
+    padding-bottom: 40px;
+    border: 1px solid #00ff00;
+    /* Bordure néon */
+    box-shadow: 0 0 10px #00ff00;
+    /* Ombre néon */
+}
+
+.label {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    /* Espace entre le label et l'input */
+    color: #00ff00;
+    /* Texte vert néon */
+    font-size: 16px;
+}
+
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Espace entre l'input et les boutons */
+}
+
+.input {
+    background-color: #262626; /* Fond sombre */
+    color: #00ff00; /* Texte vert néon */
+    border: 1px solid #00ff00; /* Bordure néon */
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 5px; /* Coins arrondis */
+    outline: none; /* Supprime la bordure par défaut */
+    transition: border-color 0.3s, box-shadow 0.3s;
+    -moz-appearance: textfield; /* Masquer les boutons dans Firefox */
+    width: 80%;
+}
+
+.input::-webkit-inner-spin-button,
+.input::-webkit-outer-spin-button {
+    -webkit-appearance: none; /* Masquer les boutons dans WebKit */
+    margin: 0; /* Supprimer la marge */
+}
+
+.input:focus {
+    border-color: #00cc00; /* Bordure verte plus claire au focus */
+    box-shadow: 0 0 8px #00ff00; /* Ombre néon au focus */
+}
+
+.custom-buttons {
+
+    gap: 1px; /* Espace entre les boutons */
+}
+
+.custom-button {
+    background-color: #00ff00; /* Fond vert néon */
+    color: #0d0d0d; /* Texte sombre */
+    border: 1px solid #00ff00; /* Bordure néon */
+    border-radius: 3px; /* Coins arrondis */
+    padding: 4px 8px; /* Espacement interne */
+    cursor: pointer; /* Curseur pointer */
+    font-size: 12px; /* Taille de la police */
+    transition: background-color 0.3s;
+}
+
+.custom-button:hover {
+    background-color: #00cc00; /* Fond vert plus clair au survol */
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.controls button {
+    background-color: #003300; /* Fond sombre pour les boutons */
+    color: #00ff00; /* Texte vert néon */
+    border: 1px solid #00ff00; /* Bordure néon */
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px; /* Coins arrondis */
+    transition: background-color 0.3s, box-shadow 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Espace entre l'icône et le texte */
+}
+
+.controls button:hover {
+    background-color: #005500; /* Fond vert foncé au survol */
+    box-shadow: 0 0 8px #00ff00; /* Ombre néon au survol */
+}
+
+.controls button:disabled {
+    background-color: #1a1a1a; /* Fond sombre */
+    color: #555; /* Texte gris */
+    cursor: not-allowed;
+}
