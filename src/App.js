@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './CSS/App.css';
 import CryptoJS from 'crypto-js';
-import { FaLink, FaUnlink, FaKey, FaLock, FaLockOpen, FaClock, FaCheck, FaTimes, FaSort, FaSortUp, FaSortDown } from 'react-icons/fa';
+import { FaLink, FaUnlink, FaKey, FaLock, FaLockOpen, FaClock, FaCheck, FaTimes, FaSortUp, FaSortDown } from 'react-icons/fa';
 
 function App() {
   const [passwordLength, setPasswordLength] = useState(4);
@@ -13,8 +13,8 @@ function App() {
   const [socket, setSocket] = useState(null);
   const [passwordsList, setPasswordsList] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const [sortOrderTime, setSortOrderTime] = useState('asc'); // Tri par date
-  const [sortOrderStatus, setSortOrderStatus] = useState('asc'); // Tri par état
+  const [sortOrderTime, setSortOrderTime] = useState('asc');
+  const [sortOrderStatus, setSortOrderStatus] = useState('asc');
   const [brokenPasswordsCount, setBrokenPasswordsCount] = useState(0);
   const [unbrokenPasswordsCount, setUnbrokenPasswordsCount] = useState(0);
 
