@@ -50,33 +50,26 @@ function App() {
 
   useEffect(() => {
     updatePasswordCounts(passwordsList);
+    const fetchContainersStatus = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/status");
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setContainersStatus(data);
+
+        console.log("Containers status fetched:", data);
+      } catch (error) {
+          console.error("Error fetching containers status:", error);
+      }
+    };
+
+    fetchContainersStatus(); // we refetch the container status everytime the password list gets updated.
   }, [passwordsList]);
 
   const [containersStatus, setContainersStatus] = useState([]);
-
-  useEffect(() => {
-    // Simuler la réception des données des conteneurs depuis le backend
-    const fetchContainersStatus = async () => {
-      // Générer 6 groupes de 4 conteneurs
-      const mockData = [];
-      for (let groupId = 1; groupId <= 6; groupId++) {
-        for (let containerId = 1; containerId <= 4; containerId++) {
-          const status = ['actif', 'inactif', 'mort'][Math.floor(Math.random() * 3)]; // Statut aléatoire
-          const hash = status === 'actif' ? `hash-${groupId}-${containerId}` : ''; // Mot de passe si actif
-          mockData.push({
-            id: `${groupId}-${containerId}`, // ID unique
-            groupId: groupId, // ID du groupe
-            status: status,
-            hash: hash,
-          });
-        }
-      }
-
-      setContainersStatus(mockData);
-    };
-
-    fetchContainersStatus();
-  }, []);
 
   const connectSocket = () => {
     const ws = new WebSocket('ws://localhost:8080/ws');
@@ -84,6 +77,7 @@ function App() {
       setStatus('Connected');
       setIsConnected(true);
       setSocket(ws);
+      ws.send("client");
       console.log("WebSocket connected");
     };
     ws.onclose = () => {
@@ -92,6 +86,19 @@ function App() {
       setSocket(null);
       console.log("WebSocket disconnected");
     };
+    ws.addEventListener("message", (msg) => {      
+      const words = msg.data.split(" ");
+      
+      if (words.length < 3) return; // this should never happen
+      const password = words[2];      
+  
+      setPasswordsList((prevList) => 
+          prevList.map(entry => 
+              entry.password === password ? { ...entry, status: "Broken" } : entry // if we find the correct password it means that the backend is correct in the cracking process.
+          )
+      );
+  });
+  
     ws.onerror = (error) => {
       console.error("WebSocket error:", error);
       setStatus('Error');
