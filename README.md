@@ -1,6 +1,6 @@
-# 🚀 DestroyersClient - Docker Setup Guide
+# 🚀 DestroyersClient
 
-This guide provides instructions for running the **DestroyersClient** React application using the pre-built Docker image from **Docker Hub**.
+This web app is dependent on [This backend app](https://github.com/RabieTF/TheLeadDestroyer) and was developed by Rabie Toaba and Aris Meksaoui for a lab project at Université du Havre Normandie.
 
 ---
 
