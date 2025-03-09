@@ -52,6 +52,32 @@ function App() {
     updatePasswordCounts(passwordsList);
   }, [passwordsList]);
 
+  const [containersStatus, setContainersStatus] = useState([]);
+
+  useEffect(() => {
+    // Simuler la réception des données des conteneurs depuis le backend
+    const fetchContainersStatus = async () => {
+      // Générer 6 groupes de 4 conteneurs
+      const mockData = [];
+      for (let groupId = 1; groupId <= 6; groupId++) {
+        for (let containerId = 1; containerId <= 4; containerId++) {
+          const status = ['actif', 'inactif', 'mort'][Math.floor(Math.random() * 3)]; // Statut aléatoire
+          const hash = status === 'actif' ? `hash-${groupId}-${containerId}` : ''; // Mot de passe si actif
+          mockData.push({
+            id: `${groupId}-${containerId}`, // ID unique
+            groupId: groupId, // ID du groupe
+            status: status,
+            hash: hash,
+          });
+        }
+      }
+
+      setContainersStatus(mockData);
+    };
+
+    fetchContainersStatus();
+  }, []);
+
   const connectSocket = () => {
     const ws = new WebSocket('ws://localhost:8080/ws');
     ws.onopen = () => {
@@ -185,7 +211,9 @@ function App() {
               entriesPerPage={entriesPerPage}
             />
           } />
-          <Route path="/containers" element={<Containers />} />
+          <Route path="/containers" element={
+            <Containers containersStatus={containersStatus} />
+          } />
         </Routes>
       </div>
     </Router>
