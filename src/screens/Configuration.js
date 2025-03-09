@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FaLink, FaUnlink } from 'react-icons/fa';
-import '../CSS/Configuration.css'; // Importez le fichier CSS
+import '../CSS/Configuration.css';
 
 const Configuration = ({ isConnected, connectSocket, disconnectSocket, passwordLength, setPasswordLength, intervalTime, setIntervalTime }) => {
     // Fonctions pour incrémenter/décrémenter les valeurs

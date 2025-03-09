@@ -1,0 +1,110 @@
+/* Containers.css */
+.containers {
+    background-color: #1a1a1a; /* Fond sombre */
+    padding: 20px;
+    border: 1px solid #00ff00; /* Bordure néon */
+    box-shadow: 0 0 10px #00ff00; /* Ombre néon */
+    border-radius: 10px; /* Coins arrondis */
+    margin: 20px auto;
+    max-width: 90%; /* Largeur maximale pour une meilleure lisibilité */
+    height: 100%;
+    margin-bottom: 0;
+}
+
+.groups-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 groupes par ligne */
+    gap: 24px; /* Espace entre les groupes */
+}
+
+.group-container {
+    background-color: #1a1a1a; /* Fond sombre */
+    padding: 16px;
+    border: 1px solid #00ff00; /* Bordure néon */
+    box-shadow: 0 0 8px #00ff00; /* Ombre néon */
+    border-radius: 8px; /* Coins arrondis */
+}
+
+.group-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 12px;
+    color: #00ff00; /* Texte vert néon */
+}
+
+.group-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 conteneurs par ligne */
+    gap: 12px; /* Espace entre les conteneurs */
+}
+
+.container-item {
+    background-color: #262626; /* Fond légèrement plus clair */
+    padding: 16px;
+    border: 1px solid #00ff00; /* Bordure néon */
+    box-shadow: 0 0 6px #00ff00; /* Ombre néon */
+    border-radius: 8px; /* Coins arrondis */
+    color: #00ff00; /* Texte vert néon */
+    transition: background-color 0.3s, box-shadow 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.container-item:hover {
+    background-color: #004400; /* Fond vert foncé au survol */
+    box-shadow: 0 0 12px #00ff00; /* Ombre néon plus intense au survol */
+}
+
+.container-image {
+    width: 200px; /* Ajustez la taille de l'image */
+    height: 80px; /* Ajustez la taille de l'image */
+    margin-bottom: 12px;
+}
+
+.container-text {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.status-text {
+    font-size: 16px;
+    margin: 8px 0 0 0;
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Espace entre l'icône et le texte */
+}
+
+.hash-text {
+    font-size: 9pt;
+}
+
+/* Styles pour les statuts */
+.status-active {
+    color: #4CAF50; /* Vert pour actif */
+}
+
+.status-inactive {
+    color: #FFC107; /* Jaune pour inactif */
+}
+
+.status-dead {
+    color: #F44336; /* Rouge pour mort */
+}
+
+.status-active:hover {
+    color: #003300; /* Vert pour actif */
+    background-color: #4CAF50; /* Vert pour actif */
+}
+
+.status-inactive:hover {
+    color: #003300; /* Jaune pour inactif */
+    background-color: #FFC107; /* Jaune pour inactif */
+}
+
+.status-dead:hover {
+    color: #003300; /* Rouge pour mort */
+    background-color: #F44336; /* Rouge pour mort */
+}
